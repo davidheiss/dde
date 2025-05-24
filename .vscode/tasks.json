@@ -1,0 +1,64 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "meson compile",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "problemMatcher": [
+                "$meson-gcc"
+            ],
+            "group": {
+                "isDefault": true,
+                "kind": "build"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
+            "label": "Build: Shell",
+            "type": "shell",
+            "command": "meson compile shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "problemMatcher": [
+                "$meson-gcc"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
+            "label": "Build: Convey",
+            "type": "shell",
+            "command": "meson compile convey",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "problemMatcher": [
+                "$meson-gcc"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        }
+    ]
+}

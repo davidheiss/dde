@@ -1,0 +1,9 @@
+{
+    "mesonbuild.configureOnOpen": true,
+    "xml.fileAssociations": [
+        {
+            "pattern": "**/*.gschema.xml",
+            "systemId": "file:///usr/share/glib-2.0/schemas/gschema.dtd"
+        }
+    ]
+}

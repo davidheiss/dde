@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id='org.dh.shell' path='/org/dh/shell/'>
+    <key name='workspaces' type='t'>
+      <default>5</default>
+    </key>
+    <key name='background' type='s'>
+      <default>''</default>
+    </key>
+  </schema>
+</schemalist>

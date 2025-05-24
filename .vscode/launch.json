@@ -1,0 +1,48 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Convey",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/convey/convey",
+            "args": [
+                "--gapplication-replace"
+            ],
+            "env": {
+                "G_DEBUG": "fatal-warnings"
+            },
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build: Convey"
+        },
+        {
+            "name": "Shell",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/shell/shell",
+            "args": [
+                "--gapplication-replace"
+            ],
+            "env": {
+                "G_DEBUG": "fatal-warnings"
+            },
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build: Shell"
+        },
+        {
+            "name": "Shell (interactive)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/shell/shell",
+            "args": [
+                "--gapplication-replace"
+            ],
+            "env": {
+                "G_DEBUG": "fatal-warnings",
+                "GTK_DEBUG": "interactive"
+            },
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build: Shell"
+        }
+    ],
+}

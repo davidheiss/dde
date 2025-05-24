@@ -1,0 +1,6 @@
+<node>
+  <interface name="org.dh.Compositor">
+    <property name="active_workspace" type="i" access="read"/>
+    <property name="workspaces" type="ai" access="read"/>
+  </interface>
+</node>

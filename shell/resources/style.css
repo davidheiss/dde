@@ -1,0 +1,16 @@
+.panel {
+	background: black;
+}
+
+.corners {
+	color: black;
+}
+
+.small {
+	min-width: 0;
+	min-height: 0;
+}
+
+button.small {
+	padding: 4px;
+}
