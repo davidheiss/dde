@@ -14,6 +14,7 @@ static void shell_window_realize(GtkWidget *widget, gpointer user_data)
         gtk_layer_set_anchor(window, edge, TRUE);
     gtk_layer_set_layer(window, GTK_LAYER_SHELL_LAYER_BOTTOM);
     gtk_layer_set_exclusive_edge(window, GTK_LAYER_SHELL_EDGE_TOP);
+    gtk_layer_set_namespace(window, "dde");
 }
 
 static void shell_window_panel_changed(
