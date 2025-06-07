@@ -2,10 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Convey",
+            "name": "Proxy",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/build/convey/convey",
+            "program": "${workspaceFolder}/build/proxy/proxy",
             "args": [
                 "--gapplication-replace"
             ],
@@ -13,7 +13,7 @@
                 "G_DEBUG": "fatal-warnings"
             },
             "cwd": "${workspaceFolder}",
-            "preLaunchTask": "Build: Convey"
+            "preLaunchTask": "Build: Proxy"
         },
         {
             "name": "Launcher",

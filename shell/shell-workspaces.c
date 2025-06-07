@@ -194,8 +194,8 @@ static void shell_workspaces_init(ShellWorkspaces *self)
     );
 
     self->compositor = de_compositor_proxy_new_for_bus_sync(
-        G_BUS_TYPE_SESSION, G_DBUS_PROXY_FLAGS_NONE, "org.dh.convey",
-        "/org/dh/convey", NULL, &error
+        G_BUS_TYPE_SESSION, G_DBUS_PROXY_FLAGS_NONE, "org.dde.proxy",
+        "/org/dde/proxy", NULL, &error
     );
     if (error) {
         g_warning(

@@ -10,7 +10,7 @@ dbus = gnome.gdbus_codegen(
     sources: [
         'dbus/compositor.xml',
     ],
-    interface_prefix: 'org.dh',
+    interface_prefix: 'org.dde',
     namespace: 'De',
 )
 

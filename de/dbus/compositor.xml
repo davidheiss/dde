@@ -1,5 +1,5 @@
 <node>
-  <interface name="org.dh.Compositor">
+  <interface name="org.dde.Compositor">
     <property name="active_workspace" type="i" access="read"/>
     <property name="workspaces" type="ai" access="read"/>
   </interface>

@@ -201,6 +201,16 @@ launcher_window_activate(GtkListView *list, guint position, gpointer user_data)
 
 void launcher_window_realize(GtkWidget *widget)
 {
+    GtkWindow *window = GTK_WINDOW(widget);
+
+    gtk_layer_init_for_window(window);
+    gtk_layer_set_anchor(window, GTK_LAYER_SHELL_EDGE_LEFT, true);
+    gtk_layer_set_anchor(window, GTK_LAYER_SHELL_EDGE_RIGHT, true);
+    gtk_layer_set_anchor(window, GTK_LAYER_SHELL_EDGE_TOP, true);
+    gtk_layer_set_anchor(window, GTK_LAYER_SHELL_EDGE_BOTTOM, true);
+    gtk_layer_set_exclusive_zone(window, -1);
+    gtk_layer_set_keyboard_mode(window, GTK_LAYER_SHELL_KEYBOARD_MODE_EXCLUSIVE);
+
     GTK_WIDGET_CLASS(launcher_window_parent_class)->realize(widget);
 }
 

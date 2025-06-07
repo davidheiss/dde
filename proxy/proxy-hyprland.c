@@ -1,19 +1,19 @@
-#include "convey-hyprland.h"
+#include "proxy-hyprland.h"
 #include <de-workspaces.h>
 #include <json-glib/json-glib.h>
 
 #define HYPR_RESPONSE_DELIM "\n\n\n"
 #define HYPR_EVENT_DELIM ">>"
 
-struct _ConveyHyprland {
+struct _ProxyHyprland {
     DeCompositorSkeleton parent;
     DeWorkspaces *workspaces;
 };
 
-G_DEFINE_FINAL_TYPE(ConveyHyprland, convey_hyprland, DE_TYPE_COMPOSITOR_SKELETON);
+G_DEFINE_FINAL_TYPE(ProxyHyprland, proxy_hyprland, DE_TYPE_COMPOSITOR_SKELETON);
 
 static void
-convey_hyprland_handle_event(ConveyHyprland *self, gchar *event, gchar *data)
+proxy_hyprland_handle_event(ProxyHyprland *self, gchar *event, gchar *data)
 {
     if (!strcmp(event, "workspacev2")) {
         *strchr(data, ',') = '\0';
@@ -41,7 +41,7 @@ convey_hyprland_handle_event(ConveyHyprland *self, gchar *event, gchar *data)
     }
 }
 
-static void convey_hyprland_read_event(
+static void proxy_hyprland_read_event(
     GObject *stream, GAsyncResult *res, gpointer user_data
 )
 {
@@ -66,16 +66,16 @@ static void convey_hyprland_read_event(
     *data = '\0';
     data += sizeof(HYPR_EVENT_DELIM) - 1;
 
-    ConveyHyprland *self = CONVEY_HYPRLAND(user_data);
-    convey_hyprland_handle_event(self, event, data);
+    ProxyHyprland *self = PROXY_HYPRLAND(user_data);
+    proxy_hyprland_handle_event(self, event, data);
 
     g_data_input_stream_read_line_async(
         G_DATA_INPUT_STREAM(stream), G_PRIORITY_HIGH, NULL,
-        convey_hyprland_read_event, user_data
+        proxy_hyprland_read_event, user_data
     );
 }
 
-static void convey_hyprland_listen(ConveyHyprland *self)
+static void proxy_hyprland_listen(ProxyHyprland *self)
 {
     const char *runtime = g_getenv("XDG_RUNTIME_DIR");
     const char *his = getenv("HYPRLAND_INSTANCE_SIGNATURE");
@@ -116,13 +116,13 @@ static void convey_hyprland_listen(ConveyHyprland *self)
     g_autoptr(GDataInputStream)
         data_input_stream = g_data_input_stream_new(input_stream);
     g_data_input_stream_read_line_async(
-        data_input_stream, G_PRIORITY_HIGH, NULL, convey_hyprland_read_event,
+        data_input_stream, G_PRIORITY_HIGH, NULL, proxy_hyprland_read_event,
         self
     );
 }
 
-static void convey_hyprland_handle_command(
-    ConveyHyprland *self, gchar *command, gchar *data
+static void proxy_hyprland_handle_command(
+    ProxyHyprland *self, gchar *command, gchar *data
 )
 {
     g_autoptr(GError) error = NULL;
@@ -160,7 +160,7 @@ static void convey_hyprland_handle_command(
 }
 
 static void
-convey_hyprland_commands(ConveyHyprland *self, gchar **commands, gsize n)
+proxy_hyprland_commands(ProxyHyprland *self, gchar **commands, gsize n)
 {
     const char *runtime = g_getenv("XDG_RUNTIME_DIR");
     const char *his = getenv("HYPRLAND_INSTANCE_SIGNATURE");
@@ -251,7 +251,7 @@ convey_hyprland_commands(ConveyHyprland *self, gchar **commands, gsize n)
             *next_data = '\0';
             next_data += sizeof(HYPR_RESPONSE_DELIM) - 1;
         }
-        convey_hyprland_handle_command(self, commands[i++], data);
+        proxy_hyprland_handle_command(self, commands[i++], data);
         data = next_data;
     } while (data);
 
@@ -261,35 +261,35 @@ convey_hyprland_commands(ConveyHyprland *self, gchar **commands, gsize n)
         );
 }
 
-static void convey_hyprland_finalize(GObject *object)
+static void proxy_hyprland_finalize(GObject *object)
 {
-    ConveyHyprland *self = CONVEY_HYPRLAND(object);
+    ProxyHyprland *self = PROXY_HYPRLAND(object);
     g_free(self->workspaces);
-    G_OBJECT_CLASS(convey_hyprland_parent_class)->finalize(object);
+    G_OBJECT_CLASS(proxy_hyprland_parent_class)->finalize(object);
 }
 
-static void convey_hyprland_class_init(ConveyHyprlandClass *cls)
+static void proxy_hyprland_class_init(ProxyHyprlandClass *cls)
 {
     GObjectClass *object = G_OBJECT_CLASS(cls);
-    object->finalize = convey_hyprland_finalize;
+    object->finalize = proxy_hyprland_finalize;
 }
 
-static void convey_hyprland_init(ConveyHyprland *self)
+static void proxy_hyprland_init(ProxyHyprland *self)
 {
     self->workspaces = de_workspaces_new();
     gchar *commands[] = {
         "activeworkspace",
         "workspaces",
     };
-    convey_hyprland_commands(self, commands, 2);
-    convey_hyprland_listen(self);
+    proxy_hyprland_commands(self, commands, 2);
+    proxy_hyprland_listen(self);
 }
 
-ConveyHyprland *convey_hyprland_new()
+ProxyHyprland *proxy_hyprland_new()
 {
-    return g_object_new(CONVEY_TYPE_HYPRLAND, NULL);
+    return g_object_new(PROXY_TYPE_HYPRLAND, NULL);
 }
 
-gboolean convey_hyprland_active() {
+gboolean proxy_hyprland_active() {
     return g_getenv("HYPRLAND_INSTANCE_SIGNATURE") != NULL;
 }

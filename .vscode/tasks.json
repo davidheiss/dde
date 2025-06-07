@@ -43,9 +43,9 @@
             }
         },
         {
-            "label": "Build: Convey",
+            "label": "Build: Proxy",
             "type": "shell",
-            "command": "meson compile convey",
+            "command": "meson compile proxy",
             "options": {
                 "cwd": "${workspaceFolder}/build"
             },

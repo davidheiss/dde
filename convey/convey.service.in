@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=org.dh.convey
-Exec=@bindir@/convey

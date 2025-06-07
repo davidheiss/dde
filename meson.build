@@ -11,7 +11,7 @@ json_glib = dependency('json-glib-1.0')
 
 subdir('de')
 subdir('launcher')
-subdir('convey')
+subdir('proxy')
 subdir('shell')
 
 gnome.post_install(
