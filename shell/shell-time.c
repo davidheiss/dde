@@ -18,7 +18,7 @@ typedef enum _ShellTimeProperty ShellTimeProperty;
 static ShellTime *instance;
 static GParamSpec *properties[N_PROP];
 
-G_DEFINE_TYPE(ShellTime, shell_time, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(ShellTime, shell_time, G_TYPE_OBJECT)
 
 static gboolean shell_time_update(ShellTime *self)
 {

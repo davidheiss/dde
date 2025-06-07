@@ -8,6 +8,7 @@
 #define SHELL_WORKSPACES_WIDTH(n)                                              \
     (SHELL_WORKSPACES_SIZE * n + SHELL_WORKSPACES_SPACING * (n - 1) +          \
      SHELL_WORKSPACES_EXPAND)
+
 struct _ShellWorkspaces {
     GtkButton parent;
     GtkWidget *drawing;
@@ -19,7 +20,7 @@ struct _ShellWorkspaces {
     AdwAnimation *animation;
 };
 
-G_DEFINE_TYPE(ShellWorkspaces, shell_workspaces, GTK_TYPE_BUTTON)
+G_DEFINE_FINAL_TYPE(ShellWorkspaces, shell_workspaces, GTK_TYPE_BUTTON)
 
 static void shell_workspaces_draw_func(
     GtkDrawingArea *drawing_area, cairo_t *cr, int width, int height,
@@ -149,14 +150,6 @@ end:
     gtk_widget_queue_draw(self->drawing);
 };
 
-// static void shell_workspaces_changed_owner(
-//     ShellWorkspaces *self, GParamSpec *pspec, GObject *object
-// )
-// {
-//     g_autofree char* owner = g_dbus_proxy_get_name_owner(G_DBUS_PROXY(object));
-//     gtk_widget_set_visible(GTK_WIDGET(self), owner != NULL);
-// }
-
 static void shell_workspaces_dispose(GObject *object)
 {
     ShellWorkspaces *self = SHELL_WORKSPACES(object);
@@ -210,10 +203,6 @@ static void shell_workspaces_init(ShellWorkspaces *self)
         );
         g_clear_error(&error);
     }
-    // g_signal_connect_object(
-    //     self->compositor, "notify::g-name-owner",
-    //     G_CALLBACK(shell_workspaces_changed_owner), self, G_CONNECT_SWAPPED
-    // );
     g_signal_connect_object(
         self->compositor, "notify::active-workspace",
         G_CALLBACK(shell_workspaces_changed_active), self, G_CONNECT_SWAPPED

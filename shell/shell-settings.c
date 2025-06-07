@@ -6,7 +6,7 @@ struct _ShellSettings {
 
 ShellSettings *instance;
 
-G_DEFINE_TYPE(ShellSettings, shell_settings, G_TYPE_SETTINGS)
+G_DEFINE_FINAL_TYPE(ShellSettings, shell_settings, G_TYPE_SETTINGS)
 
 void shell_settings_finalize(GObject *self)
 {

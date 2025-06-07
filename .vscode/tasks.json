@@ -59,6 +59,24 @@
                 "showReuseMessage": true,
                 "clear": true
             }
+        },
+        {
+            "label": "Build: Launcher",
+            "type": "shell",
+            "command": "meson compile launcher",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "problemMatcher": [
+                "$meson-gcc"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "showReuseMessage": true,
+                "clear": true
+            }
         }
     ]
 }

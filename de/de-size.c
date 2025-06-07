@@ -20,7 +20,7 @@ typedef enum _DeSizeProperty DeSizeProperty;
 
 static GParamSpec *properties[N_PROPS];
 
-G_DEFINE_TYPE(DeSize, de_size, GTK_TYPE_WIDGET);
+G_DEFINE_FINAL_TYPE(DeSize, de_size, GTK_TYPE_WIDGET);
 
 static void de_size_measure(
     GtkWidget *widget, GtkOrientation orientation, int for_size, int *minimum,

@@ -16,6 +16,33 @@
             "preLaunchTask": "Build: Convey"
         },
         {
+            "name": "Launcher",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/launcher/launcher",
+            "args": [
+            ],
+            "env": {
+                "G_DEBUG": "fatal-warnings"
+            },
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build: Launcher"
+        },
+        {
+            "name": "Launcher (interactive)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/launcher/launcher",
+            "args": [
+            ],
+            "env": {
+                "G_DEBUG": "fatal-warnings",
+                "GTK_DEBUG": "interactive"
+            },
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build: Launcher"
+        },
+        {
             "name": "Shell",
             "type": "lldb",
             "request": "launch",

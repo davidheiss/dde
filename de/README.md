@@ -1,1 +1,0 @@
-# Davids Desktop Environment Toolkit

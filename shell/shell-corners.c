@@ -16,7 +16,7 @@ typedef enum _ShellCornersProperty ShellCornersProperty;
 
 static GParamSpec *properties[N_PROPS];
 
-G_DEFINE_TYPE(ShellCorners, shell_corners, GTK_TYPE_DRAWING_AREA);
+G_DEFINE_FINAL_TYPE(ShellCorners, shell_corners, GTK_TYPE_DRAWING_AREA);
 
 static void shell_corners_draw_function(
     GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data

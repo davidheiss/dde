@@ -4,7 +4,7 @@ struct _DeContainingBox {
     GtkBox parent;
 };
 
-G_DEFINE_TYPE(DeContainingBox, de_containing_box, GTK_TYPE_BOX)
+G_DEFINE_FINAL_TYPE(DeContainingBox, de_containing_box, GTK_TYPE_BOX)
 
 static gboolean de_containing_box_contains(GtkWidget *widget, double x, double y)
 {

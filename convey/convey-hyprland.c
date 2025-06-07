@@ -10,7 +10,7 @@ struct _ConveyHyprland {
     DeWorkspaces *workspaces;
 };
 
-G_DEFINE_TYPE(ConveyHyprland, convey_hyprland, DE_TYPE_COMPOSITOR_SKELETON);
+G_DEFINE_FINAL_TYPE(ConveyHyprland, convey_hyprland, DE_TYPE_COMPOSITOR_SKELETON);
 
 static void
 convey_hyprland_handle_event(ConveyHyprland *self, gchar *event, gchar *data)
