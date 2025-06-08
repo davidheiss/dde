@@ -13,11 +13,11 @@
   - [ ] Bluez
 
 ### Launcher
-- [ ] Application (.desktop)
+- [x] Application (.desktop)
 
 ### Notification
 
-### Convey
+### Proxy
 - [x] Active Workspace (Hyprland)
 - [x] Workspaces (Hyprland)
 

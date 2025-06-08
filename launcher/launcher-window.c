@@ -9,6 +9,8 @@ struct _LauncherWindow {
     GtkSelectionModel *selection;
     GtkWidget *list;
     GtkWidget *stack;
+    char *path;
+    GKeyFile *key_file;
 };
 
 G_DEFINE_FINAL_TYPE(
@@ -110,6 +112,29 @@ static gboolean launcher_window_filter(gpointer item, gpointer user_data)
     return strncasecmp(text, name, strlen(text)) == 0;
 }
 
+gint launcher_window_sorter(
+    gconstpointer a, gconstpointer b, gpointer user_data
+)
+{
+    LauncherWindow *self = LAUNCHER_WINDOW(user_data);
+
+    GAppInfo *app_a = G_APP_INFO(a);
+    GAppInfo *app_b = G_APP_INFO(b);
+
+    guint64 score_a = g_key_file_get_uint64(
+        self->key_file, "Application", g_app_info_get_id(app_a), NULL
+    );
+    guint64 score_b = g_key_file_get_uint64(
+        self->key_file, "Application", g_app_info_get_id(app_b), NULL
+    );
+
+    if (score_a == score_b) {
+        return 0;
+    }
+
+    return score_a < score_b ? 1 : -1;
+}
+
 static void
 launcher_window_notify(GObject *object, GParamSpec *pspec, gpointer user_data)
 {
@@ -188,14 +213,31 @@ static void launcher_window_bind(
 static void
 launcher_window_activate(GtkListView *list, guint position, gpointer user_data)
 {
+    LauncherWindow *self = LAUNCHER_WINDOW(user_data);
+
     GAppInfo *app = g_list_model_get_item(
         G_LIST_MODEL((gtk_list_view_get_model(list))), position
     );
-    g_autoptr(GError) error = NULL;
+    GError *error = NULL;
     g_app_info_launch(app, NULL, NULL, &error);
     if (error) {
         g_warning("%s", error->message);
+        g_clear_error(&error);
     }
+
+    const char *id = g_app_info_get_id(app);
+    guint64 value = g_key_file_get_uint64(
+        self->key_file, "Application", id, NULL
+    );
+    g_key_file_set_uint64(self->key_file, "Application", id, value + 1);
+    g_mkdir_with_parents(g_path_get_dirname(self->path), 0755);
+    g_key_file_save_to_file(self->key_file, self->path, &error);
+    if (error) {
+        g_warning("%s", error->message);
+        g_clear_error(&error);
+    }
+
+    g_print("%lu\n", value);
     gtk_window_close(GTK_WINDOW(user_data));
 }
 
@@ -209,7 +251,9 @@ void launcher_window_realize(GtkWidget *widget)
     gtk_layer_set_anchor(window, GTK_LAYER_SHELL_EDGE_TOP, true);
     gtk_layer_set_anchor(window, GTK_LAYER_SHELL_EDGE_BOTTOM, true);
     gtk_layer_set_exclusive_zone(window, -1);
-    gtk_layer_set_keyboard_mode(window, GTK_LAYER_SHELL_KEYBOARD_MODE_EXCLUSIVE);
+    gtk_layer_set_keyboard_mode(
+        window, GTK_LAYER_SHELL_KEYBOARD_MODE_EXCLUSIVE
+    );
     gtk_layer_set_namespace(window, "dde");
 
     GTK_WIDGET_CLASS(launcher_window_parent_class)->realize(widget);
@@ -220,6 +264,14 @@ void launcher_window_dispose(GObject *object)
     G_OBJECT_CLASS(launcher_window_parent_class)->dispose(object);
 }
 
+void launcher_window_finalize(GObject *object)
+{
+    LauncherWindow *self = LAUNCHER_WINDOW(object);
+    g_free(self->path);
+    g_key_file_free(self->key_file);
+    G_OBJECT_CLASS(launcher_window_parent_class)->dispose(object);
+}
+
 static void launcher_window_class_init(LauncherWindowClass *cls)
 {
     GtkWidgetClass *widget = GTK_WIDGET_CLASS(cls);
@@ -227,10 +279,27 @@ static void launcher_window_class_init(LauncherWindowClass *cls)
 
     GObjectClass *object = G_OBJECT_CLASS(cls);
     object->dispose = launcher_window_dispose;
+    object->finalize = launcher_window_finalize;
 }
 
 static void launcher_window_init(LauncherWindow *self)
 {
+    gchar **environ = g_get_environ();
+    const char *XDG_DATA_HOME = g_environ_getenv(environ, "XDG_DATA_HOME");
+    if (XDG_DATA_HOME) {
+        self->path = g_strdup_printf("%s/dde/launcher/data.ini", XDG_DATA_HOME);
+    } else {
+        const char *HOME = g_environ_getenv(environ, "HOME");
+        self->path = g_strdup_printf(
+            "%s/.local/share/dde/launcher/data.init", HOME
+        );
+    }
+
+    self->key_file = g_key_file_new();
+    g_key_file_load_from_file(
+        self->key_file, self->path, G_KEY_FILE_NONE, NULL
+    );
+
     GtkGesture *click = gtk_gesture_click_new();
     gtk_widget_add_controller(GTK_WIDGET(self), GTK_EVENT_CONTROLLER(click));
     g_signal_connect_object(
@@ -284,9 +353,18 @@ static void launcher_window_init(LauncherWindow *self)
         self->text, "notify::text", G_CALLBACK(launcher_window_notify), self
     );
 
-    self->selection = GTK_SELECTION_MODEL(gtk_single_selection_new(G_LIST_MODEL(
-        gtk_filter_list_model_new(G_LIST_MODEL(store), GTK_FILTER(self->filter))
-    )));
+    GtkCustomSorter *sorter = gtk_custom_sorter_new(
+        launcher_window_sorter, self, NULL
+    );
+
+    self->selection = GTK_SELECTION_MODEL(
+        gtk_single_selection_new(G_LIST_MODEL(gtk_filter_list_model_new(
+            G_LIST_MODEL(
+                gtk_sort_list_model_new(G_LIST_MODEL(store), GTK_SORTER(sorter))
+            ),
+            GTK_FILTER(self->filter)
+        )))
+    );
 
     GtkListItemFactory *factory = gtk_signal_list_item_factory_new();
     g_signal_connect(factory, "setup", G_CALLBACK(launcher_window_setup), NULL);
